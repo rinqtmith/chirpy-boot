@@ -1,6 +1,21 @@
-import express, { NextFunction, Response, Request } from "express";
+import express, { Request, Response } from "express";
 
-type Middleware = (req: Request, res: Response, next: NextFunction) => void;
+import { config, Middleware } from "./config.js";
+
+const handleHealthCheck = (_: Request, res: Response) => {
+  res.set("Content-Type", "text/plain; charset=utf-8");
+  res.send("OK");
+};
+
+const handleMetrics = (_: Request, res: Response) => {
+  const hits = config.fileserverHits;
+  res.send(`Hits: ${hits}`);
+};
+
+const handleReset = (_: Request, res: Response) => {
+  config.fileserverHits = 0;
+  res.send("Reset successful");
+};
 
 const middlewareLogResponses: Middleware = (req, res, next) => {
   res.on("finish", () => {
@@ -11,18 +26,24 @@ const middlewareLogResponses: Middleware = (req, res, next) => {
   });
   next();
 };
+const middlewareMetricsInc: Middleware = (_, res, next) => {
+  res.on("finish", () => {
+    config.fileserverHits += 1;
+  });
+  next();
+};
 
 const app = express();
 const PORT = 8080;
 
 app.use(middlewareLogResponses);
+app.use("/app", middlewareMetricsInc);
 
 app.use("/app", express.static("./src/app"));
 
-app.get("/healthz", (_, res) => {
-  res.set("Content-Type", "text/plain; charset=utf-8");
-  res.send("OK");
-});
+app.get("/healthz", handleHealthCheck);
+app.get("/metrics", handleMetrics);
+app.get("/reset", handleReset);
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
