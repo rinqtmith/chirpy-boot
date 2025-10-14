@@ -6,6 +6,10 @@ export type Middleware = (
   next: NextFunction,
 ) => void;
 
+export type ValidateChirpResponse = {
+  body: string;
+};
+
 type APIConfig = {
   fileserverHits: number;
 };
