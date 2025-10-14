@@ -9,7 +9,15 @@ const handleHealthCheck = (_: Request, res: Response) => {
 
 const handleMetrics = (_: Request, res: Response) => {
   const hits = config.fileserverHits;
-  res.send(`Hits: ${hits}`);
+  res.set("Content-Type", "text/html; charset=utf-8");
+  res.send(`
+<html>
+  <body>
+    <h1>Welcome, Chirpy Admin</h1>
+    <p>Chirpy has been visited ${hits} times!</p>
+  </body>
+</html>
+`);
 };
 
 const handleReset = (_: Request, res: Response) => {
@@ -42,8 +50,9 @@ app.use("/app", middlewareMetricsInc);
 app.use("/app", express.static("./src/app"));
 
 app.get("/api/healthz", handleHealthCheck);
-app.get("/api/metrics", handleMetrics);
-app.get("/api/reset", handleReset);
+
+app.get("/admin/reset", handleReset);
+app.get("/admin/metrics", handleMetrics);
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
