@@ -6,6 +6,13 @@ export type Middleware = (
   next: NextFunction,
 ) => void;
 
+export type ErrorMiddleware = (
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => void;
+
 export type ValidateChirpResponse = {
   body: string;
 };
