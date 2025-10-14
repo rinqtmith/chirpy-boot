@@ -10,7 +10,19 @@ export const handleValidateChirp = async (req: Request, res: Response) => {
     });
     return;
   }
+
+  const profane = ["kerfuffle", "sharbert", "fornax"];
+
+  const bodyToCheck = parsedBody.body.split(" ");
+  const cleanBody = bodyToCheck.map((word) => {
+    if (profane.includes(word.toLowerCase())) {
+      return "****";
+    } else {
+      return word;
+    }
+  });
+
   res.status(200).send({
-    valid: true,
+    cleanedBody: cleanBody.join(" "),
   });
 };
