@@ -16,7 +16,7 @@ app.use("/app", middlewareMetricsInc, express.static("./src/app"));
 
 app.get("/api/healthz", handleHealthCheck);
 
-app.get("/admin/reset", handleReset);
+app.post("/admin/reset", handleReset);
 app.get("/admin/metrics", handleMetrics);
 
 app.listen(PORT, () => {
