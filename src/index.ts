@@ -3,16 +3,17 @@ import postgres from "postgres";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { drizzle } from "drizzle-orm/postgres-js";
 
-import { handleMetrics } from "./api/metrics.js";
+import { config } from "./config.js";
 import {
   middlewareErrorHandler,
   middlewareLogResponses,
   middlewareMetricsInc,
 } from "./api/middleware.js";
+import { handleMetrics } from "./api/metrics.js";
 import { handleHealthCheck } from "./api/readiness.js";
 import { handleReset } from "./api/reset.js";
 import { handleValidateChirp } from "./api/validate_chirp.js";
-import { config } from "./config.js";
+import { handleCreateUser } from "./api/users.js";
 
 const migrationClient = postgres(config.db.url, { max: 1 });
 await migrate(drizzle(migrationClient), config.db.migrationConfig);
@@ -28,6 +29,9 @@ app.get("/api/healthz", (req, res, next) => {
 });
 app.post("/api/validate_chirp", (req, res, next) => {
   Promise.resolve(handleValidateChirp(req, res)).catch(next);
+});
+app.post("/api/users", (req, res, next) => {
+  Promise.resolve(handleCreateUser(req, res)).catch(next);
 });
 
 app.post("/admin/reset", (req, res, next) => {
