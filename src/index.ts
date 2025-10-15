@@ -12,8 +12,8 @@ import {
 import { handleMetrics } from "./api/metrics.js";
 import { handleHealthCheck } from "./api/readiness.js";
 import { handleReset } from "./api/reset.js";
-import { handleValidateChirp } from "./api/validate_chirp.js";
 import { handleCreateUser } from "./api/users.js";
+import { handlerChirpsCreate } from "./api/chirps.js";
 
 const migrationClient = postgres(config.db.url, { max: 1 });
 await migrate(drizzle(migrationClient), config.db.migrationConfig);
@@ -27,8 +27,8 @@ app.use("/app", middlewareMetricsInc, express.static("./src/app"));
 app.get("/api/healthz", (req, res, next) => {
   Promise.resolve(handleHealthCheck(req, res)).catch(next);
 });
-app.post("/api/validate_chirp", (req, res, next) => {
-  Promise.resolve(handleValidateChirp(req, res)).catch(next);
+app.post("/api/chirps", (req, res, next) => {
+  Promise.resolve(handlerChirpsCreate(req, res)).catch(next);
 });
 app.post("/api/users", (req, res, next) => {
   Promise.resolve(handleCreateUser(req, res)).catch(next);

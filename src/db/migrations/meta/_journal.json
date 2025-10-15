@@ -8,6 +8,13 @@
       "when": 1760556218959,
       "tag": "0000_burly_power_man",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1760561047495,
+      "tag": "0001_nostalgic_roland_deschain",
+      "breakpoints": true
     }
   ]
 }

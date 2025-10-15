@@ -16,8 +16,9 @@ export type ErrorMiddleware = (
   next: NextFunction,
 ) => void;
 
-export type ValidateChirpResponse = {
+export type ChirpParameters = {
   body: string;
+  userId: string;
 };
 
 type Config = {

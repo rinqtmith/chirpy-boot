@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
 
-import { ValidateChirpResponse } from "../config.js";
+import { ChirpParameters } from "../config.js";
 import { BadRequestError } from "./errors.js";
+import { createChirp } from "../db/queries/chirps.js";
 
-export const handleValidateChirp = async (req: Request, res: Response) => {
-  const parsedBody: ValidateChirpResponse = req.body;
+export const handlerChirpsCreate = async (req: Request, res: Response) => {
+  const parsedBody: ChirpParameters = req.body;
 
   const maxChirpLength = 140;
   if (parsedBody.body.length > maxChirpLength) {
@@ -24,7 +25,10 @@ export const handleValidateChirp = async (req: Request, res: Response) => {
     }
   });
 
-  res.status(200).send({
-    cleanedBody: cleanBody.join(" "),
+  const chirp = await createChirp({
+    body: cleanBody.join(" "),
+    userId: parsedBody.userId,
   });
+
+  res.status(201).send(chirp);
 };
