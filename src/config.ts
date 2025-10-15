@@ -1,5 +1,6 @@
 process.loadEnvFile();
 
+import { MigrationConfig } from "drizzle-orm/migrator";
 import { NextFunction, Response, Request } from "express";
 
 export type Middleware = (
@@ -19,9 +20,19 @@ export type ValidateChirpResponse = {
   body: string;
 };
 
+type Config = {
+  api: APIConfig;
+  db: DBConfig;
+};
+
 type APIConfig = {
-  fileserverHits: number;
-  dbURL: string;
+  fileServerHits: number;
+  port: number;
+};
+
+type DBConfig = {
+  url: string;
+  migrationConfig: MigrationConfig;
 };
 
 function envOrThrow(key: string) {
@@ -32,7 +43,17 @@ function envOrThrow(key: string) {
   return value;
 }
 
-export const config: APIConfig = {
-  fileserverHits: 0,
-  dbURL: envOrThrow("DB_URL"),
+const migrationConfig: MigrationConfig = {
+  migrationsFolder: "./src/db/migrations",
+};
+
+export const config: Config = {
+  api: {
+    fileServerHits: 0,
+    port: Number(envOrThrow("PORT")),
+  },
+  db: {
+    url: envOrThrow("DB_URL"),
+    migrationConfig: migrationConfig,
+  },
 };

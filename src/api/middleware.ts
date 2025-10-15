@@ -18,7 +18,7 @@ export const middlewareLogResponses: Middleware = (req, res, next) => {
 
 export const middlewareMetricsInc: Middleware = (_, res, next) => {
   res.on("finish", () => {
-    config.fileserverHits++;
+    config.api.fileServerHits++;
   });
   next();
 };
