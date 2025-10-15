@@ -1,4 +1,10 @@
 import { config, ErrorMiddleware, Middleware } from "../config.js";
+import {
+  BadRequestError,
+  UserNotAuthenticatedError,
+  UserForbiddenError,
+  NotFoundError,
+} from "./errors.js";
 
 export const middlewareLogResponses: Middleware = (req, res, next) => {
   res.on("finish", () => {
@@ -23,9 +29,29 @@ export const middlewareErrorHandler: ErrorMiddleware = (
   res,
   _next,
 ) => {
-  console.error(err.message);
   res.header("Content-Type", "application/json");
-  res.status(500).json({
-    error: "Something went wrong on our end",
+
+  let statusCode = 500;
+  let message = "Something went wrong on our end";
+
+  if (err instanceof BadRequestError) {
+    statusCode = 400;
+    message = err.message;
+  } else if (err instanceof UserNotAuthenticatedError) {
+    statusCode = 401;
+    message = err.message;
+  } else if (err instanceof UserForbiddenError) {
+    statusCode = 403;
+    message = err.message;
+  } else if (err instanceof NotFoundError) {
+    statusCode = 404;
+    message = err.message;
+  }
+
+  if (statusCode >= 500) {
+    console.log(err.message);
+  }
+  res.status(statusCode).json({
+    error: message,
   });
 };
