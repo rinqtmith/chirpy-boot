@@ -2,9 +2,9 @@ import { Request, Response } from "express";
 
 import { ChirpParameters } from "../config.js";
 import { BadRequestError } from "./errors.js";
-import { createChirp } from "../db/queries/chirps.js";
+import { createChirp, getAllChirps } from "../db/queries/chirps.js";
 
-export const handlerChirpsCreate = async (req: Request, res: Response) => {
+export const handleChirpsCreate = async (req: Request, res: Response) => {
   const parsedBody: ChirpParameters = req.body;
 
   const maxChirpLength = 140;
@@ -31,4 +31,10 @@ export const handlerChirpsCreate = async (req: Request, res: Response) => {
   });
 
   res.status(201).send(chirp);
+};
+
+export const handleChirpsGet = async (_: Request, res: Response) => {
+  const chirps = await getAllChirps();
+
+  res.status(200).send(chirps);
 };
