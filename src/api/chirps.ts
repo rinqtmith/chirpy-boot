@@ -2,7 +2,11 @@ import { Request, Response } from "express";
 
 import { ChirpParameters } from "../config.js";
 import { BadRequestError } from "./errors.js";
-import { createChirp, getAllChirps } from "../db/queries/chirps.js";
+import {
+  createChirp,
+  getAllChirps,
+  getChirpById,
+} from "../db/queries/chirps.js";
 
 export const handleChirpsCreate = async (req: Request, res: Response) => {
   const parsedBody: ChirpParameters = req.body;
@@ -37,4 +41,15 @@ export const handleChirpsGet = async (_: Request, res: Response) => {
   const chirps = await getAllChirps();
 
   res.status(200).send(chirps);
+};
+
+export const handleChirpGetById = async (req: Request, res: Response) => {
+  const { chirpID } = req.params;
+  const chirp = await getChirpById(chirpID);
+
+  if (!chirp) {
+    throw new BadRequestError(`Chirp with id ${chirpID} not found`);
+  }
+
+  res.status(200).send(chirp);
 };

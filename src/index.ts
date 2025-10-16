@@ -13,7 +13,11 @@ import { handleMetrics } from "./api/metrics.js";
 import { handleHealthCheck } from "./api/readiness.js";
 import { handleReset } from "./api/reset.js";
 import { handleCreateUser } from "./api/users.js";
-import { handleChirpsCreate, handleChirpsGet } from "./api/chirps.js";
+import {
+  handleChirpGetById,
+  handleChirpsCreate,
+  handleChirpsGet,
+} from "./api/chirps.js";
 
 const migrationClient = postgres(config.db.url, { max: 1 });
 await migrate(drizzle(migrationClient), config.db.migrationConfig);
@@ -32,6 +36,9 @@ app.post("/api/chirps", (req, res, next) => {
 });
 app.get("/api/chirps", (req, res, next) => {
   Promise.resolve(handleChirpsGet(req, res)).catch(next);
+});
+app.get("/api/chirps/:chirpID", (req, res, next) => {
+  Promise.resolve(handleChirpGetById(req, res)).catch(next);
 });
 app.post("/api/users", (req, res, next) => {
   Promise.resolve(handleCreateUser(req, res)).catch(next);
