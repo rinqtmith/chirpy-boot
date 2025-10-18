@@ -21,6 +21,11 @@ export type ChirpParameters = {
   userId: string;
 };
 
+export type UserParameters = {
+  email: string;
+  password: string;
+};
+
 type Config = {
   api: APIConfig;
   db: DBConfig;
