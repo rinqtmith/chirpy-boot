@@ -1,7 +1,8 @@
 import { hash, verify } from "argon2";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
-import { Payload } from "../config";
+import { Payload } from "../config.js";
+import { UserNotAuthenticatedError } from "../api/errors.js";
 
 export const hashPassword = async (password: string) => {
   const hashedPassword = await hash(password);
@@ -22,16 +23,26 @@ export const makeJWT = (userID: string, expiresIn: number, secret: string) => {
     iat: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + expiresIn,
   };
-  const jwtString = jwt.sign(payload, secret);
+  const token = jwt.sign(payload, secret, { algorithm: "HS256" });
 
-  return jwtString;
+  return token;
 };
 
-export const validateJWT = (tokenString: string, secret: string) => {
-  const jwtString = jwt.verify(tokenString, secret);
-  if (!jwtString || !jwtString.sub) {
-    throw new Error("Invalid token");
+export function validateJWT(tokenString: string, secret: string) {
+  let decoded: Payload;
+  try {
+    decoded = jwt.verify(tokenString, secret) as JwtPayload;
+  } catch (e) {
+    throw new UserNotAuthenticatedError("Invalid token");
   }
 
-  return jwtString.sub;
-};
+  if (decoded.iss !== "chirpy") {
+    throw new UserNotAuthenticatedError("Invalid issuer");
+  }
+
+  if (!decoded.sub) {
+    throw new UserNotAuthenticatedError("No user ID in token");
+  }
+
+  return decoded.sub;
+}
