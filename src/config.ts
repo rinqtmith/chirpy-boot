@@ -2,6 +2,7 @@ process.loadEnvFile();
 
 import { MigrationConfig } from "drizzle-orm/migrator";
 import { NextFunction, Response, Request } from "express";
+import { JwtPayload } from "jsonwebtoken";
 
 export type Middleware = (
   req: Request,
@@ -25,6 +26,8 @@ export type UserParameters = {
   email: string;
   password: string;
 };
+
+export type Payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
 
 type Config = {
   api: APIConfig;
