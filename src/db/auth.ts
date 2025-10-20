@@ -1,6 +1,7 @@
 import { Request } from "express";
 import { hash, verify } from "argon2";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { randomBytes } from "crypto";
 
 import { config, Payload } from "../config.js";
 import { UserNotAuthenticatedError } from "../api/errors.js";
@@ -57,4 +58,9 @@ export const getBearerToken = (req: Request): string => {
       "Authorization header missing or invalid",
     );
   }
+};
+
+export const makeRefreshToken = () => {
+  const data = randomBytes(32).toString("hex");
+  return data;
 };

@@ -47,6 +47,7 @@ type DBConfig = {
 
 type JWTConfig = {
   secretKey: string;
+  refreshDuration: number;
 };
 
 function envOrThrow(key: string) {
@@ -73,5 +74,6 @@ export const config: Config = {
   },
   jwt: {
     secretKey: envOrThrow("JWT_SECRET_KEY"),
+    refreshDuration: 60 * 24 * 60 * 60 * 1000,
   },
 };
