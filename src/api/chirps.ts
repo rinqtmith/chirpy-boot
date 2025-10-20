@@ -7,8 +7,11 @@ import {
   getAllChirps,
   getChirpById,
 } from "../db/queries/chirps.js";
+import { getBearerToken, validateJWT } from "../db/auth.js";
 
 export const handleChirpsCreate = async (req: Request, res: Response) => {
+  const token = getBearerToken(req);
+  const userId = validateJWT(token);
   const parsedBody: ChirpParameters = req.body;
 
   const maxChirpLength = 140;
@@ -31,7 +34,7 @@ export const handleChirpsCreate = async (req: Request, res: Response) => {
 
   const chirp = await createChirp({
     body: cleanBody.join(" "),
-    userId: parsedBody.userId,
+    userId: userId,
   });
 
   res.status(201).send(chirp);

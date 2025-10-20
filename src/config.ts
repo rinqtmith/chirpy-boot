@@ -19,7 +19,6 @@ export type ErrorMiddleware = (
 
 export type ChirpParameters = {
   body: string;
-  userId: string;
 };
 
 export type UserParameters = {
@@ -32,6 +31,7 @@ export type Payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
 type Config = {
   api: APIConfig;
   db: DBConfig;
+  jwt: JWTConfig;
 };
 
 type APIConfig = {
@@ -43,6 +43,10 @@ type APIConfig = {
 type DBConfig = {
   url: string;
   migrationConfig: MigrationConfig;
+};
+
+type JWTConfig = {
+  secretKey: string;
 };
 
 function envOrThrow(key: string) {
@@ -66,5 +70,8 @@ export const config: Config = {
   db: {
     url: envOrThrow("DB_URL"),
     migrationConfig: migrationConfig,
+  },
+  jwt: {
+    secretKey: envOrThrow("JWT_SECRET_KEY"),
   },
 };

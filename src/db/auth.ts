@@ -1,7 +1,8 @@
+import { Request } from "express";
 import { hash, verify } from "argon2";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
-import { Payload } from "../config.js";
+import { config, Payload } from "../config.js";
 import { UserNotAuthenticatedError } from "../api/errors.js";
 
 export const hashPassword = async (password: string) => {
@@ -16,22 +17,22 @@ export const checkPasswordHash = async (password: string, hash: string) => {
   return isValid;
 };
 
-export const makeJWT = (userID: string, expiresIn: number, secret: string) => {
+export const makeJWT = (userID: string, expiresIn: number) => {
   const payload: Payload = {
     iss: "chirpy",
     sub: userID,
     iat: Math.floor(Date.now() / 1000),
     exp: Math.floor(Date.now() / 1000) + expiresIn,
   };
-  const token = jwt.sign(payload, secret, { algorithm: "HS256" });
+  const token = jwt.sign(payload, config.jwt.secretKey, { algorithm: "HS256" });
 
   return token;
 };
 
-export function validateJWT(tokenString: string, secret: string) {
+export const validateJWT = (tokenString: string) => {
   let decoded: Payload;
   try {
-    decoded = jwt.verify(tokenString, secret) as JwtPayload;
+    decoded = jwt.verify(tokenString, config.jwt.secretKey) as JwtPayload;
   } catch (e) {
     throw new UserNotAuthenticatedError("Invalid token");
   }
@@ -45,4 +46,15 @@ export function validateJWT(tokenString: string, secret: string) {
   }
 
   return decoded.sub;
-}
+};
+
+export const getBearerToken = (req: Request): string => {
+  const authHeader = req.get("Authorization");
+  if (authHeader && authHeader.startsWith("Bearer ")) {
+    return authHeader.slice(7);
+  } else {
+    throw new UserNotAuthenticatedError(
+      "Authorization header missing or invalid",
+    );
+  }
+};

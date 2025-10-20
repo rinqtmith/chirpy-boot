@@ -5,7 +5,6 @@ describe("Password Hashing", () => {
   const password1 = "correctPassword123!";
   const password2 = "anotherPassword456!";
   const userid = "user123";
-  const secret = "my_little_secret";
   let hash1: string;
   let hash2: string;
 
@@ -26,18 +25,18 @@ describe("Password Hashing", () => {
 
   it("creates a valid JWT and validates it", () => {
     const expiresIn = 60 * 60; // 1 hour
-    const token = makeJWT(userid, expiresIn, secret);
-    const sub = validateJWT(token, secret);
+    const token = makeJWT(userid, expiresIn);
+    const sub = validateJWT(token);
     expect(sub).toBe(userid);
   });
 
   it("throws error for invalid JWT", () => {
-    const invalidToken = makeJWT(userid, 1, secret);
-    expect(() => validateJWT(invalidToken + "tampered", secret)).toThrow();
+    const invalidToken = makeJWT(userid, 1);
+    expect(() => validateJWT(invalidToken + "tampered")).toThrow();
   });
 
   it("throws error for expired JWT", () => {
-    const token = makeJWT(userid, -10, secret); // expired
-    expect(() => validateJWT(token, secret)).toThrow();
+    const token = makeJWT(userid, -10); // expired
+    expect(() => validateJWT(token)).toThrow();
   });
 });
