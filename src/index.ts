@@ -20,6 +20,7 @@ import {
   handleChirpsGet,
 } from "./api/chirps.js";
 import { handleLoginUser, handlerRefresh, handlerRevoke } from "./api/auth.js";
+import { handleUpgradeUserToChirpyRed } from "./api/webwooks.js";
 
 const migrationClient = postgres(config.db.url, { max: 1 });
 await migrate(drizzle(migrationClient), config.db.migrationConfig);
@@ -66,6 +67,10 @@ app.post("/admin/reset", (req, res, next) => {
 });
 app.get("/admin/metrics", (req, res, next) => {
   Promise.resolve(handleMetrics(req, res)).catch(next);
+});
+
+app.post("/api/polka/webhooks", (req, res, next) => {
+  Promise.resolve(handleUpgradeUserToChirpyRed(req, res)).catch(next);
 });
 
 app.use(middlewareErrorHandler);

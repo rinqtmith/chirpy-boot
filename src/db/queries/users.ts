@@ -53,3 +53,17 @@ export const updateUser = async (
 
   return result;
 };
+
+export const upgradeUserToChirpyRed = async (userId: string) => {
+  const [finalUser] = await db
+    .update(users)
+    .set({
+      isChirpyRed: true,
+    })
+    .where(eq(users.id, userId))
+    .returning();
+
+  const result: NewUserWithoutPassword = finalUser;
+
+  return result;
+};

@@ -36,6 +36,27 @@
       "when": 1760995502883,
       "tag": "0004_dusty_mother_askani",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1761249291566,
+      "tag": "0005_careful_tiger_shark",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1761250455260,
+      "tag": "0006_gray_mikhail_rasputin",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1761250777799,
+      "tag": "0007_premium_alice",
+      "breakpoints": true
     }
   ]
 }

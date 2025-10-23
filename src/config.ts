@@ -26,6 +26,13 @@ export type UserParameters = {
   password: string;
 };
 
+export type UserUpgradeParameters = {
+  event: string;
+  data: {
+    userId: string;
+  };
+};
+
 export type Payload = Pick<JwtPayload, "iss" | "sub" | "iat" | "exp">;
 
 type Config = {
