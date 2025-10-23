@@ -64,3 +64,14 @@ export const makeRefreshToken = () => {
   const data = randomBytes(32).toString("hex");
   return data;
 };
+
+export const getAPIKey = (req: Request): string => {
+  const authHeader = req.get("Authorization");
+  if (authHeader && authHeader.startsWith("ApiKey ")) {
+    return authHeader.slice(7);
+  } else {
+    throw new UserNotAuthenticatedError(
+      "Authorization header missing or invalid",
+    );
+  }
+};

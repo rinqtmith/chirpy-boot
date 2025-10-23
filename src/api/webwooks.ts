@@ -1,13 +1,20 @@
 import { Request, Response } from "express";
 
 import { upgradeUserToChirpyRed } from "../db/queries/users.js";
-import { UserUpgradeParameters } from "../config.js";
-import { NotFoundError } from "./errors.js";
+import { config, UserUpgradeParameters } from "../config.js";
+import { NotFoundError, UserNotAuthenticatedError } from "./errors.js";
+import { getAPIKey } from "../db/auth.js";
 
 export const handleUpgradeUserToChirpyRed = async (
   req: Request,
   res: Response,
 ) => {
+  const apiKey = getAPIKey(req);
+
+  if (apiKey !== config.api.polka) {
+    throw new UserNotAuthenticatedError("Invalid API key");
+  }
+
   const params: UserUpgradeParameters = {
     event: req.body.event,
     data: {
