@@ -34,3 +34,22 @@ export const getUserByEmail = async (email: string) => {
 
   return user;
 };
+
+export const updateUser = async (
+  userId: string,
+  userUpdate: UserParameters,
+) => {
+  const hashedPassword = await hashPassword(userUpdate.password);
+  const [finalUser] = await db
+    .update(users)
+    .set({
+      email: userUpdate.email,
+      hashed_password: hashedPassword,
+    })
+    .where(eq(users.id, userId))
+    .returning();
+
+  const result: NewUserWithoutPassword = finalUser;
+
+  return result;
+};

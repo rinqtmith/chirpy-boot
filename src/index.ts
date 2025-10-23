@@ -12,7 +12,7 @@ import {
 import { handleMetrics } from "./api/metrics.js";
 import { handleHealthCheck } from "./api/readiness.js";
 import { handleReset } from "./api/reset.js";
-import { handleCreateUser } from "./api/users.js";
+import { handleCreateUser, handleUpdateUser } from "./api/users.js";
 import {
   handleChirpGetById,
   handleChirpsCreate,
@@ -43,6 +43,9 @@ app.get("/api/chirps/:chirpID", (req, res, next) => {
 });
 app.post("/api/users", (req, res, next) => {
   Promise.resolve(handleCreateUser(req, res)).catch(next);
+});
+app.put("/api/users", (req, res, next) => {
+  Promise.resolve(handleUpdateUser(req, res)).catch(next);
 });
 app.post("/api/login", (req, res, next) => {
   Promise.resolve(handleLoginUser(req, res)).catch(next);
