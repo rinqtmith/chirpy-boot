@@ -14,6 +14,7 @@ import { handleHealthCheck } from "./api/readiness.js";
 import { handleReset } from "./api/reset.js";
 import { handleCreateUser, handleUpdateUser } from "./api/users.js";
 import {
+  handleChirpDeleteById,
   handleChirpGetById,
   handleChirpsCreate,
   handleChirpsGet,
@@ -40,6 +41,9 @@ app.get("/api/chirps", (req, res, next) => {
 });
 app.get("/api/chirps/:chirpID", (req, res, next) => {
   Promise.resolve(handleChirpGetById(req, res)).catch(next);
+});
+app.delete("/api/chirps/:chirpID", (req, res, next) => {
+  Promise.resolve(handleChirpDeleteById(req, res)).catch(next);
 });
 app.post("/api/users", (req, res, next) => {
   Promise.resolve(handleCreateUser(req, res)).catch(next);
