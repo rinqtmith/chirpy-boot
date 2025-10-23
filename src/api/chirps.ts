@@ -53,13 +53,18 @@ export const handleChirpsGet = async (req: Request, res: Response) => {
   if (typeof authorIdQuery === "string") {
     authorId = authorIdQuery;
   }
+  let sort = "";
+  let sortQuery = req.query.sort;
+  if (typeof sortQuery === "string") {
+    sort = sortQuery;
+  }
 
   let chirps: NewChirp[];
 
   if (authorId === "") {
-    chirps = await getAllChirps();
+    chirps = await getAllChirps(sort);
   } else {
-    chirps = await getChirpsByAuthorId(authorId);
+    chirps = await getChirpsByAuthorId(authorId, sort);
   }
 
   res.status(200).send(chirps);
